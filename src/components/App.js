@@ -7,7 +7,7 @@ let children = '';
 let name = '';
 let title = '';
 
-function App(props) {
+function App() {
 
   // Хук открытия попапа аватарки
   const [isEditAvatarPopupOpen, setEditAvatar] = React.useState(false);
