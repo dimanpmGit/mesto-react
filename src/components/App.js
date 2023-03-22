@@ -2,10 +2,13 @@ import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
+import ImagePopup from './ImagePopup';
 import React from '../../node_modules/react/index.js';
 let children = '';
 let name = '';
 let title = '';
+let link = '';
+let imageName = '';
 
 function App() {
 
@@ -17,6 +20,9 @@ function App() {
 
   // Хук открытия попапа для добавления карточки
   const [isAddPlacePopupOpen, setAddPlace] = React.useState(false);
+
+  // Хук открытия полноразмерной картинки
+  const [selectedCard, setImagePopup] = React.useState(false);
   
 
   function handleEditAvatarClick() {
@@ -56,17 +62,24 @@ function App() {
       <span class="popup__error url-error"></span>`;
   }
 
+  function handleCardClick(card) {
+    setImagePopup(true);
+    link = card.link;
+    imageName = card.name;
+  }
+
   function closeAllPopups() {
     setEditAvatar(false);
     setEditProfile(false);
     setAddPlace(false);
+    setImagePopup(false);
   }
 
   return (
-    <body className="page">
+    <div className="page">
       <div className="page__container">
         <Header />
-        <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick}/>
+        <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onCardClick={handleCardClick}/>
         <Footer />
         <PopupWithForm name={name} title={title} isOpen={
           isEditAvatarPopupOpen ? true : 
@@ -76,21 +89,9 @@ function App() {
           children={children}
           onClose={closeAllPopups}
         />
-        <template id="card-item-template">
-          <li className="element">
-            <img className="element__image"/>
-            <button className="element__trash-button" aria-label="Trash" type="button"></button>
-            <div className="element__info">
-              <h2 className="element__name"></h2>
-              <div className="element__heart-block">
-                <button className="element__heart-button" aria-label="Like" type="button"></button>
-                <p className="element__heart-likes">0</p>
-              </div>
-            </div>
-          </li>
-        </template>
+        <ImagePopup card={selectedCard} onClose={closeAllPopups} link={link} name={imageName}/>
       </div>
-    </body>
+    </div>
   );
 }
 
