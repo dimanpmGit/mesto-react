@@ -1,12 +1,13 @@
-import React from '../../node_modules/react/index.js';
+import React from 'react';
+import {useEffect, useState} from 'react';
 import Api from '../utils/Api.js';
 import Card from './Card';
 
-function Main(props) {
-  const [userData, setUserData] = React.useState({userName: '', userDescription: '', userAvatar: ''});
-  const [cards, setCards] = React.useState([]);
+function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) {
+  const [userData, setUserData] = useState({userName: '', userDescription: '', userAvatar: ''});
+  const [cards, setCards] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     Promise.all([Api.getUserInfo(), Api.getCardsData()])
       .then((data) => {
         setUserData({
@@ -26,23 +27,23 @@ function Main(props) {
     <main className="content">
       <section className="profile">
         <div className="profile__info-wrapper">
-          <button className="profile__avatar" type="button" onClick={props.onEditAvatar}>
-            <img className="profile__avatar-image" style={{backgroundImage: `url(${userData.userAvatar})`,backgroundSize:'cover',backgroundPosition:'center',backgroundRepeat:'no-repeat'}}/>
+          <button className="profile__avatar" type="button" onClick={onEditAvatar}>
+            <img className="profile__avatar-image" src={`${userData.userAvatar}`} alt={userData.userName}/>
           </button>  
           <div className="profile__info">
             <div className="profile__name-wrapper">
               <h1 className="profile__name">{userData.userName}</h1>
-              <button className="profile__edit-button link" aria-label="Edit" type="button" onClick={props.onEditProfile}></button>
+              <button className="profile__edit-button link" aria-label="Edit" type="button" onClick={onEditProfile}></button>
             </div>
             <p className="profile__description">{userData.userDescription}</p>
           </div>
         </div>
-        <button className="profile__add-button link" aria-label="Add" type="button" onClick={props.onAddPlace}></button>
+        <button className="profile__add-button link" aria-label="Add" type="button" onClick={onAddPlace}></button>
       </section>
       <section className="elements">
         <ul className="elements__list">
           {cards.map((item) => (
-            <Card key={item._id} card={item} onCardClick={props.onCardClick}/>
+            <Card key={item._id} card={item} onCardClick={onCardClick}/>
           ))}
         </ul>
       </section>
