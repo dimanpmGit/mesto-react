@@ -22,7 +22,6 @@
 @import url(./blocks/element/__info/element__info.css);
 @import url(./blocks/element/__name/element__name.css);
 @import url(./blocks/element/__trash-button/element__trash-button.css);
-@import url(./blocks/element/__trash-button/_type/element__trash-button_type_visible.css);
 @import url(./blocks/element/__heart-button/element__heart-button.css);
 @import url(./blocks/element/__heart-button/_active/element__heart-button_active.css);
 @import url(./blocks/element/__heart-block/element__heart-block.css);
