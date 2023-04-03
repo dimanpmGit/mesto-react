@@ -1,4 +1,4 @@
-.element__heart-block {
+.card__like-block {
   display: flex;
   flex-direction: column;
   justify-content: space-between;

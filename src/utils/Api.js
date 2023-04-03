@@ -72,6 +72,21 @@ class Api {
       .then(handleResponse)
   }
 
+  changeLikeCardStatus(id, isLiked) {
+    if (isLiked) {
+      return fetch(`${this.urlForCards}/${id}/likes`, {
+        method: 'PUT',
+        headers: this.headers
+      })
+        .then(handleResponse)
+    }
+    return fetch(`${this.urlForCards}/${id}/likes`, {
+      method: 'DELETE',
+      headers: this.headers
+    })
+      .then(handleResponse)
+  }
+
   changeAvatar(data) {
     return fetch(`${this.urlForUser}/avatar`,
       {

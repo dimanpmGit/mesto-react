@@ -5,17 +5,33 @@ import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import Api from '../utils/Api.js';
+import api from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 let name = '';
 let title = '';
 
 export default function App() {
-  const [currentUser, setCurrentUser] = React.useState({});
+  const [currentUser, setCurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
-    Api.getUserInfo()
+    Promise.all([api.getUserInfo(), api.getCardsData()])
+    .then((data) => {
+      setCurrentUser({
+        _id: data[0]._id,
+        userName: data[0].name,
+        userDescription: data[0].about,
+        userAvatar: data[0].avatar
+      });
+      setCards(data[1]);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    
+    /*
+    api.getUserInfo()
       .then((data) => {
         setCurrentUser({
           userName: data.name,
@@ -26,8 +42,15 @@ export default function App() {
       .catch((err) => {
         console.log(err);
       })
+        api.getCardsData()
+          .then((data) => {
+            setCards(data);
+          })
+          .catch((err) => {
+            console.log(err);
+          })*/
   }, []);
-
+  console.log(currentUser);
   // Хук открытия попапа аватарки
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
 
@@ -67,8 +90,22 @@ export default function App() {
     });
   }
 
-  function handleOnCardDeleteClick() {
-    console.log('handleOnCardDeleteClick clicked');
+  function handleCardLike(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+      api.changeLikeCardStatus(card._id, !isLiked)
+        .then((newCard) => {
+          setCards((state) => {
+            state.map((c) => c._id === card._id ? newCard : c)
+          });
+
+      });
+  }
+
+  function handleDeleteClick() {
+    console.log('handleDeleteClick clicked');
   }
 
   function closeAllPopups() {
@@ -83,8 +120,14 @@ export default function App() {
       <div className="page">
         <div className="page__container">
           <Header />
-          <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} 
-            onCardClick={handleCardClick} onCardDeleteClick={handleOnCardDeleteClick}/>
+          <Main cards={cards}
+                onEditAvatar={handleEditAvatarClick}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onCardClick={handleCardClick}
+                onCardLike={handleCardLike}
+                onCardDelete={handleDeleteClick}
+          />
           <Footer />
           <PopupWithForm name={name} title={title} buttonText='Сохранить' isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}>
             <input id="avatar-url" className="popup__input popup__input_type_avatar" name="avatar" type="url"

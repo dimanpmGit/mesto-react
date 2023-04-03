@@ -1,4 +1,4 @@
-.element__trash-button {
+.card__trash-button {
   display: block;
   margin: 0;
   padding: 0;
@@ -19,6 +19,6 @@
   box-sizing: border-box;
 }
 
-.element__trash-button:hover {
+.card__trash-button:hover {
   opacity: .6;
 }

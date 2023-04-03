@@ -1,22 +1,9 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
-import Api from '../utils/Api.js';
 import Card from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
-function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardDeleteClick}) {
-  const [cards, setCards] = useState([]);
+function Main({ cards, onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = React.useContext(CurrentUserContext);
-
-  useEffect(() => {
-    Api.getCardsData()
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  }, []);
 
   return (
     <main className="content">
@@ -35,10 +22,10 @@ function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardDelet
         </div>
         <button className="profile__add-button link" aria-label="Add" type="button" onClick={onAddPlace}></button>
       </section>
-      <section className="elements">
-        <ul className="elements__list">
+      <section className="cards">
+        <ul className="cards__list">
           {cards.map((item) => (
-            <Card key={item._id} card={item} onCardClick={onCardClick} onCardDeleteClick={onCardDeleteClick}/>
+            <Card key={item._id} card={item} onCardClick={onCardClick} onCardLike={onCardLike} onCardDelete={onCardDelete}/>
           ))}
         </ul>
       </section>
