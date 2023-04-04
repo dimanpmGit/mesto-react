@@ -85,6 +85,7 @@ class Api {
       headers: this.headers
     })
       .then(handleResponse)
+      /*return isLiked ? this.likeCard(id) : this.unlikeCard(id);*/
   }
 
   changeAvatar(data) {

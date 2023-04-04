@@ -3,7 +3,6 @@ import Main from './Main';
 import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
-import React from 'react';
 import { useState, useEffect } from 'react';
 import api from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
@@ -29,28 +28,8 @@ export default function App() {
     .catch((err) => {
       console.log(err);
     });
-    
-    /*
-    api.getUserInfo()
-      .then((data) => {
-        setCurrentUser({
-          userName: data.name,
-          userDescription: data.about,
-          userAvatar: data.avatar
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-        api.getCardsData()
-          .then((data) => {
-            setCards(data);
-          })
-          .catch((err) => {
-            console.log(err);
-          })*/
   }, []);
-  console.log(currentUser);
+
   // Хук открытия попапа аватарки
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
 
@@ -93,19 +72,27 @@ export default function App() {
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some(i => i._id === currentUser._id);
-    
-    // Отправляем запрос в API и получаем обновлённые данные карточки
-      api.changeLikeCardStatus(card._id, !isLiked)
-        .then((newCard) => {
-          setCards((state) => {
-            state.map((c) => c._id === card._id ? newCard : c)
-          });
 
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((state) => {
+          return state.map((c) => c._id === card._id ? newCard : c)
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
-  function handleDeleteClick() {
-    console.log('handleDeleteClick clicked');
+  function handleCardDelete(card) {
+    api.deleteCard(card._id)
+      .then((message) => {
+        setCards((cardsAfterDel) => cardsAfterDel.filter(cardToDel => cardToDel._id !== card._id));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function closeAllPopups() {
@@ -126,15 +113,26 @@ export default function App() {
                 onAddPlace={handleAddPlaceClick}
                 onCardClick={handleCardClick}
                 onCardLike={handleCardLike}
-                onCardDelete={handleDeleteClick}
+                onCardDelete={handleCardDelete}
           />
           <Footer />
-          <PopupWithForm name={name} title={title} buttonText='Сохранить' isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}>
+          <PopupWithForm name={name} 
+            title={title} 
+            buttonText='Сохранить' 
+            isOpen={isEditAvatarPopupOpen} 
+            onClose={closeAllPopups}
+          >
             <input id="avatar-url" className="popup__input popup__input_type_avatar" name="avatar" type="url"
               placeholder="Ссылка на аватар" required/>
             <span className="popup__error avatar-url-error"></span>
           </PopupWithForm>
-          <PopupWithForm name={name} title={title} buttonText='Сохранить' isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}>
+          <PopupWithForm 
+            name={name}
+            title={title}
+            buttonText='Сохранить'
+            isOpen={isEditProfilePopupOpen}
+            onClose={closeAllPopups}
+          >
             <input id="name-input" className="popup__input popup__input_type_top" name="popup-name" type="text"
               placeholder="Имя" required minLength="2" maxLength="40"/>
             <span className="popup__error name-input-error"></span>
