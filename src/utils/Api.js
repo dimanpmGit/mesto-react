@@ -88,7 +88,7 @@ class Api {
       /*return isLiked ? this.likeCard(id) : this.unlikeCard(id);*/
   }
 
-  changeAvatar(data) {
+  setUserAvatar(data) {
     return fetch(`${this.urlForUser}/avatar`,
       {
         method: 'PATCH',

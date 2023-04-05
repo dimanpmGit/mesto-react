@@ -4,6 +4,7 @@ import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
 import { useState, useEffect } from 'react';
 import api from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
@@ -99,14 +100,31 @@ export default function App() {
 
   function handleUpdateUser(userInfo) {
     api.setUserInfo(userInfo)
-      .then((data) => {
+      .then((user) => {
         setCurrentUser({
           ...currentUser,
-          name: data.name,
-          about: data.about
+          name: user.name,
+          about: user.about
         });
         closeAllPopups();
       })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function handleUpdateAvatar(avatarLink) {
+    api.setUserAvatar(avatarLink)
+      .then((avatar) => {
+        setCurrentUser({
+          ...currentUser,
+          avatar: avatar.avatar
+        });
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function closeAllPopups() {
@@ -130,22 +148,13 @@ export default function App() {
                 onCardDelete={handleCardDelete}
           />
           <Footer />
-          <PopupWithForm 
-            name={name} 
-            title={title} 
-            buttonText='Сохранить' 
-            isOpen={isEditAvatarPopupOpen} 
-            onClose={closeAllPopups}
-          >
-            <input id="avatar-url" className="popup__input popup__input_type_avatar" name="avatar" type="url"
-              placeholder="Ссылка на аватар" required/>
-            <span className="popup__error avatar-url-error"></span>
-          </PopupWithForm>
+
+          <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
           
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
 
           <PopupWithForm 
-            name={name}
+            name='card'
             title={title}
             buttonText='Создать'
             isOpen={isAddPlacePopupOpen}
