@@ -45,10 +45,10 @@ export default function EditProfilePpup(props) {//{isOpen, onClose, props}) {
       onSubmit={handleSubmit}
     >
       <input id="name-input" className="popup__input popup__input_type_top" name="popup-name" type="text"
-        placeholder="Имя" required minLength="2" maxLength="40" value={name} onChange={handleNameChange}/>
+        placeholder="Имя" required minLength="2" maxLength="40" value={name || ''} onChange={handleNameChange}/>
       <span className="popup__error name-input-error"></span>
       <input id="description-input" className="popup__input popup__input_type_bottom" name="popup-description" type="text"
-        placeholder="Описание" required minLength="2" maxLength="200" value={description} onChange={handleDescriptionChange}/>
+        placeholder="Описание" required minLength="2" maxLength="200" value={description || ''} onChange={handleDescriptionChange}/>
       <span className="popup__error description-input-error"></span>
     </PopupWithForm>
   )
