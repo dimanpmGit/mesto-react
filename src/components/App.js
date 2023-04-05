@@ -3,6 +3,7 @@ import Main from './Main';
 import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
+import EditProfilePopup from './EditProfilePopup';
 import { useState, useEffect } from 'react';
 import api from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
@@ -18,10 +19,11 @@ export default function App() {
     Promise.all([api.getUserInfo(), api.getCardsData()])
     .then((data) => {
       setCurrentUser({
+        ...data[0],
         _id: data[0]._id,
-        userName: data[0].name,
-        userDescription: data[0].about,
-        userAvatar: data[0].avatar
+        name: data[0].name,
+        about: data[0].about,
+        avatar: data[0].avatar
       });
       setCards(data[1]);
     })
@@ -95,6 +97,18 @@ export default function App() {
       });
   }
 
+  function handleUpdateUser(userInfo) {
+    api.setUserInfo(userInfo)
+      .then((data) => {
+        setCurrentUser({
+          ...currentUser,
+          name: data.name,
+          about: data.about
+        });
+        closeAllPopups();
+      })
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -116,7 +130,8 @@ export default function App() {
                 onCardDelete={handleCardDelete}
           />
           <Footer />
-          <PopupWithForm name={name} 
+          <PopupWithForm 
+            name={name} 
             title={title} 
             buttonText='Сохранить' 
             isOpen={isEditAvatarPopupOpen} 
@@ -126,21 +141,16 @@ export default function App() {
               placeholder="Ссылка на аватар" required/>
             <span className="popup__error avatar-url-error"></span>
           </PopupWithForm>
+          
+          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
+
           <PopupWithForm 
             name={name}
             title={title}
-            buttonText='Сохранить'
-            isOpen={isEditProfilePopupOpen}
+            buttonText='Создать'
+            isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
           >
-            <input id="name-input" className="popup__input popup__input_type_top" name="popup-name" type="text"
-              placeholder="Имя" required minLength="2" maxLength="40"/>
-            <span className="popup__error name-input-error"></span>
-            <input id="description-input" className="popup__input popup__input_type_bottom" name="popup-description" type="text"
-              placeholder="Описание" required minLength="2" maxLength="200"/>
-            <span className="popup__error description-input-error"></span>
-          </PopupWithForm>
-          <PopupWithForm name={name} title={title} buttonText='Создать' isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}>
             <input id="place-name" className="popup__input popup__input_type_top" name="name" type="text"
               placeholder="Название" required minLength="2" maxLength="30"/>
             <span className="popup__error place-name-error"></span>

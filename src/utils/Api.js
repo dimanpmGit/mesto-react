@@ -20,7 +20,7 @@ class Api {
       .then(handleResponse)
   }
 
-  updateUserInfo(data) {
+  setUserInfo(data) {
     return fetch(
       this.urlForUser,
       {
