@@ -3,15 +3,15 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import PopupWithForm from "./PopupWithForm";
 
 export default function EditAvatarPopup(props) {
-  const [avatar, setAvatar] = useState('');
 
   const currentUser = useContext(CurrentUserContext);
 
   const avatarRef = useRef();
 
-  useEffect(() => {
-    setAvatar('');
-  }, []);
+    // При открытии попапа очищаем поля ввода
+    useEffect(() => {
+      avatarRef.current.value = '';
+    }, [props.isOpen]);
 
   function handleSubmit(e) {
     e.preventDefault();

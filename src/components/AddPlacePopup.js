@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PopupWithForm from "./PopupWithForm";
 export default function AddPlacePopup(props) {
   const [placeName, setPlaceName] = useState('');
   const [placeLink, setPlaceLink] = useState('');
+
+  // При открытии попапа очищаем поля ввода
+  useEffect(() => {
+    setPlaceLink('');
+    setPlaceName('');
+  }, [props.isOpen]);
 
   function handleSubmit(e) {
     // Запрещаем браузеру переходить по адресу формы (Коментарий Практикума)

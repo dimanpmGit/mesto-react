@@ -12,6 +12,17 @@ import AddPlacePopup from './AddPlacePopup';
 export default function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  // Хук открытия попапа аватарки
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+
+  // Хук открытия профиля для редактирования
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+
+  // Хук открытия попапа для добавления карточки
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+
+  // Хук открытия полноразмерной картинки
+  const [selectedCard, setSelectedCard] = useState({});
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getCardsData()])
@@ -29,19 +40,6 @@ export default function App() {
       console.log(err);
     });
   }, []);
-
-  // Хук открытия попапа аватарки
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-
-  // Хук открытия профиля для редактирования
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
-
-  // Хук открытия попапа для добавления карточки
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-
-  // Хук открытия полноразмерной картинки
-  const [selectedCard, setSelectedCard] = useState({});
-  
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
